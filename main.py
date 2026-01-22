@@ -5,12 +5,9 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta
 import json
 import warnings
-
-URL_BEGINNER = 'https://www.lmuschedule.com/daily-races/beginner'
-URL_INTERMEDIATE = 'https://www.lmuschedule.com/daily-races/intermediate'
-URL_ADVANCED = 'https://www.lmuschedule.com/daily-races/advanced'
-URL_WEEKLY = 'https://www.lmuschedule.com/weekly-races/intermediate'
-URL_SPECIAL = 'https://www.lmuschedule.com/special-event/beginner'
+import db
+from dotenv import load_dotenv
+import os
 
 def load_data_mock() -> dict:
     warnings.warn("Warning: Using mock data!")
@@ -50,8 +47,7 @@ def previous_tuesday() -> datetime:
 
 @dataclass
 class Event:
-    # TODO: Might need to change for storing in DB
-    date: datetime
+    date: str
     race_type: str
     series: str
     difficulty: str
@@ -62,7 +58,7 @@ class Event:
     car_classes: list[str]
     fuel_usage: str
     tire_wear: int
-    split_size: int
+    split_size: list[int]
     practice_length: int
     qualifying_length: int
     race_length: int
@@ -74,8 +70,13 @@ class Event:
     limited_tires: str
 
 def parse(body: dict) -> Event:
+    # splitSize is sometimes just a number instead of a list, always make it a list
+    split_size = body['splitSize']
+    if isinstance(split_size, int):
+        split_size = [split_size]
+
     return Event(
-        date = previous_tuesday(),
+        date = previous_tuesday().strftime('%Y-%m-%d'),
         race_type = body['raceType'],
         series = body['series'],
         difficulty = body['difficulty'],
@@ -86,7 +87,7 @@ def parse(body: dict) -> Event:
         car_classes = body['carClasses'],
         fuel_usage = body['fuelUsage'],
         tire_wear = body['tireWear'],
-        split_size = body['splitSize'],
+        split_size = split_size,
         practice_length = body['practiceLength'],
         qualifying_length = body['qualifyingLength'],
         race_length = body['raceLength'],
@@ -98,14 +99,33 @@ def parse(body: dict) -> Event:
         limited_tires = body['limitedTires'],
     )
 
+def is_dev() -> bool:
+    dev = True
+    mode = os.getenv("MODE")
+    if mode is not None and mode.lower() == "production":
+        dev = False
+    
+    return dev
+
 def main():
-    res = load_data_mock()
+    res = None
+    if is_dev():
+        res = load_data_mock()
+    else:
+        res = load_data()
+
+    conn = db.get_conn(is_dev())
+
+    db.ensure_init(conn)
 
     for event in res['body']:
         parsed = parse(event)
 
-        print(parsed)
-        break
+        exists = db.row_exists(conn, parsed.date, parsed.race_type, parsed.series)
+        if not exists:
+            db.row_insert(conn, parsed)
 
 if __name__ == "__main__":
+    load_dotenv()
+
     main()
