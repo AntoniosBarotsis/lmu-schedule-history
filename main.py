@@ -1,5 +1,3 @@
-# TODO: Ask the guy if he wants these emailed (maybe build an Excel?)
-
 import requests
 from dataclasses import dataclass
 from datetime import datetime, timedelta
