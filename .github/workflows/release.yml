@@ -28,6 +28,9 @@ jobs:
         env:
           MODE: ${{ secrets.MODE }}
           EXPORT: True
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          TURSO_DATABASE_NAME: ${{ secrets.TURSO_DATABASE_NAME }}
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
 
       - name: Release
         uses: softprops/action-gh-release@v2
