@@ -12,7 +12,7 @@ After a while, there will be enough data to do some fun analysis on.
 ## How do I get the data?
 
 To avoid exceeding Turso's free tier quotas, I'll automatically export the database as a `tsv` file
-and upload it in the [releases] on the **first of each month**.
+and upload it in a GitHub [releases] on the **first of each month**.
 
 ## What data is being collected?
 
