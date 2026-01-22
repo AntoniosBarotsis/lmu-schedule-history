@@ -42,4 +42,4 @@ jobs:
         with:
           files: output.tsv
           tag_name: ${{ env.tagname }}
-          name: ${{ env.tagname }}
+          body: Auto-generated db export.
