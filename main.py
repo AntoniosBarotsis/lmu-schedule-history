@@ -22,7 +22,7 @@ def load_data_mock() -> dict:
         return json.load(f)
     
 def load_data() -> dict:
-    # TODO: Only really need `referer`. Delete the rest? Add `User-Agent`
+    # TODO: Only really need `referer` technically but wtv.
     headers = {
         'accept': 'application/json, text/plain, */*',
         'accept-language': 'en-US,en;q=0.9',
@@ -39,7 +39,7 @@ def load_data() -> dict:
         'sec-fetch-dest': 'empty',
         'sec-fetch-mode': 'cors',
         'sec-fetch-site': 'same-site',
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36',
+        'user-agent': 'https://github.com/AntoniosBarotsis/lmu-schedule-history',
     }
 
     response = requests.get('https://api.lmuschedule.com/racingschedules', headers=headers)
