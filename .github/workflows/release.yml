@@ -7,6 +7,8 @@ on:
 
 jobs:
   run-python-script:
+    permissions:
+      contents: write
     environment: cron-job
     runs-on: ubuntu-latest
 
