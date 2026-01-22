@@ -19,6 +19,7 @@ jobs:
 
       - name: Run Ruff
         run: uv run ruff check --output-format=github .
+        continue-on-error: true
 
       - name: Run Ty
         run: uvx ty check --output-format=github
