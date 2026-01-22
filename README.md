@@ -11,16 +11,8 @@ After a while, there will be enough data to do some fun analysis on.
 
 ## How do I get the data?
 
-The point of this project _is_ to be open source, including the data. However, as I am using
-Turso's free tier, I don't want to give direct database access to avoid exceeding my quotas.
-
-Right now, there is no way for anyone other than me to access the data (_though to be fair,
-there isn't much of it to begin with, I started recording from the 20th of January week_) but I'll
-figure something out eventually. I kinda want to set up monthly GitHub releases that include a
-`tsv` dump or something like that.
-
-If you are reading this in the future and I still haven't come around to it, **open an issue** and
-I'll export everything manually!
+To avoid exceeding Turso's free tier quotas, I'll automatically export the database as a `tsv` file
+and upload it in the [releases] on the **first of each month**.
 
 ## What data is being collected?
 
@@ -58,3 +50,4 @@ The data is collected from <https://www.lmuschedule.com/>.
 
 [Le Mans Ultimate]: https://lemansultimate.com
 [Turso]: https://turso.tech
+[releases]: https://github.com/AntoniosBarotsis/lmu-schedule-history/releases/latest
