@@ -16,7 +16,7 @@ jobs:
         run: uv sync --locked --all-extras --dev
 
       - name: Run Ruff
-        run: uv run ruff check --output-format=github .
+        run: uv run ruff check --output-format=github
         continue-on-error: true
 
       - name: Run Ty
