@@ -2,7 +2,7 @@ from main import Event
 import warnings
 from libsql import libsql
 import os
-
+import csv
 
 def get_conn(dev=False):
     if dev:
@@ -89,3 +89,18 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         event.limited_tires,))
 
     conn.commit()
+
+def get_all(conn):
+    cur = conn.execute('SELECT * FROM events;')
+    names = list(map(lambda x: x[0], cur.description))
+
+    return (names, cur.fetchall())
+
+def export_tsv(conn):
+    (names, data) = get_all(conn)
+
+    with open('output.tsv', 'w', newline='') as file:
+        writer = csv.writer(file, delimiter='\t')
+        
+        writer.writerow(names)
+        writer.writerows(data)

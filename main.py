@@ -7,6 +7,14 @@ import db
 from dotenv import load_dotenv
 import os
 
+def is_dev() -> bool:
+    dev = True
+    mode = os.getenv("MODE")
+    if mode is not None and mode.lower() == "production":
+        dev = False
+    
+    return dev
+
 def load_data_mock() -> dict:
     warnings.warn("Warning: Using mock data!")
 
@@ -93,26 +101,16 @@ def parse(body: dict) -> Event:
         driver_rank = body['driverRank'],
         damage = body['damage'],
         driver_swaps = body['driverSwaps'],
-        track_limits = body['trackLimits'],
+        track_limits = body['trackLimits'].lower(),
         limited_tires = body['limitedTires'],
     )
 
-def is_dev() -> bool:
-    dev = True
-    mode = os.getenv("MODE")
-    if mode is not None and mode.lower() == "production":
-        dev = False
-    
-    return dev
-
-def main():
+def main(conn):
     res = None
     if is_dev():
         res = load_data_mock()
     else:
         res = load_data()
-
-    conn = db.get_conn(is_dev())
 
     db.ensure_init(conn)
 
@@ -126,4 +124,11 @@ def main():
 if __name__ == "__main__":
     load_dotenv()
 
-    main()
+    conn = db.get_conn(is_dev())
+
+    if os.getenv('EXPORT') == "True":
+        print('Exporting')
+        db.export_tsv(conn)
+    else:
+        main(conn)
+
