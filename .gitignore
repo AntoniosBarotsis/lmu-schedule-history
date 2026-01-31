@@ -11,7 +11,7 @@ wheels/
 
 .env
 
-lmu-schedule-history.*
+lmu-schedule-history*
 test.db
 .ruff_cache/
 output.tsv
