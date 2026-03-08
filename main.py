@@ -112,6 +112,9 @@ def main(conn):
     else:
         res = load_data()
 
+    print(f"Loaded {len(res['body'])} races")
+    inserted = 0
+
     db.ensure_init(conn)
 
     for event in res['body']:
@@ -120,6 +123,9 @@ def main(conn):
         exists = db.row_exists(conn, parsed.date, parsed.race_type, parsed.series)
         if not exists:
             db.row_insert(conn, parsed)
+            inserted += 1
+    
+    print(f"Inserted {inserted} rows")
 
 if __name__ == "__main__":
     load_dotenv()
