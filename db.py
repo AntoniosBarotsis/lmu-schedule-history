@@ -4,6 +4,7 @@ from libsql import libsql
 import os
 import csv
 
+
 def get_conn(dev=False):
     if dev:
         warnings.warn("Warning: Using mock database!")
@@ -49,6 +50,7 @@ def ensure_init(conn):
 
     conn.execute(create_table)
 
+
 def row_exists(conn, date: str, race_type: str, series: str) -> bool:
     sql = """
 SELECT count(*) FROM events WHERE 
@@ -56,9 +58,17 @@ SELECT count(*) FROM events WHERE
     race_type = ? AND
     series = ?
 """
-    cur = conn.execute(sql, (date,race_type,series,))
+    cur = conn.execute(
+        sql,
+        (
+            date,
+            race_type,
+            series,
+        ),
+    )
     count = cur.fetchone()[0]
     return count > 0
+
 
 def row_insert(conn, event: Event):
     sql = """
@@ -66,41 +76,48 @@ INSERT OR IGNORE INTO events (date, race_type, series, difficulty, circuit, setu
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 """
 
-    conn.execute(sql, (event.date,
-        event.race_type,
-        event.series,
-        event.difficulty,
-        event.circuit,
-        event.setup,
-        event.tire_warmers,
-        event.assists,
-        ','.join(event.car_classes),
-        event.fuel_usage,
-        event.tire_wear,
-        ','.join(f'{x}' for x in event.split_size),
-        event.practice_length,
-        event.qualifying_length,
-        event.race_length,
-        event.safety_rank,
-        event.driver_rank,
-        event.damage,
-        event.driver_swaps,
-        event.track_limits,
-        event.limited_tires,))
+    conn.execute(
+        sql,
+        (
+            event.date,
+            event.race_type,
+            event.series,
+            event.difficulty,
+            event.circuit,
+            event.setup,
+            event.tire_warmers,
+            event.assists,
+            ",".join(event.car_classes),
+            event.fuel_usage,
+            event.tire_wear,
+            ",".join(f"{x}" for x in event.split_size),
+            event.practice_length,
+            event.qualifying_length,
+            event.race_length,
+            event.safety_rank,
+            event.driver_rank,
+            event.damage,
+            event.driver_swaps,
+            event.track_limits,
+            event.limited_tires,
+        ),
+    )
 
     conn.commit()
 
+
 def get_all(conn):
-    cur = conn.execute('SELECT * FROM events;')
+    cur = conn.execute("SELECT * FROM events;")
     names = list(map(lambda x: x[0], cur.description))
 
     return (names, cur.fetchall())
 
+
 def export_tsv(conn):
     (names, data) = get_all(conn)
 
-    with open('output.tsv', 'w', newline='') as file:
-        writer = csv.writer(file, delimiter='\t')
-        
+    with open("output.tsv", "w", newline="") as file:
+        writer = csv.writer(file, delimiter="\t")
+
         writer.writerow(names)
         writer.writerows(data)
