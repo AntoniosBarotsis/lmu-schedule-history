@@ -101,8 +101,6 @@ def parse(body: dict) -> Event:
     if isinstance(split_size, int):
         split_size = [split_size]
 
-    print(body)
-
     return Event(
         date=previous_tuesday().strftime("%Y-%m-%d"),
         race_type=body["raceType"],
